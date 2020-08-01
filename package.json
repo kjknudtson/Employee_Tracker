@@ -1,0 +1,25 @@
+{
+  "name": "employee_cms",
+  "version": "1.0.0",
+  "description": "This is a program that allows a user to create a database of information about a company's employees that they may freely edit.",
+  "main": "employeeCMS.js",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kjknudtson/Employee_Tracker.git"
+  },
+  "author": "Kyle Knudtson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kjknudtson/Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/kjknudtson/Employee_Tracker#readme"
+}
