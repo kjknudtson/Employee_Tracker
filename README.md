@@ -27,7 +27,7 @@
   
   Video Demonstration: https://www.youtube.com/watch?v=YEINdyrN0JU&feature=youtu.be
 
-  ![employee_tracker](https://user-images.githubusercontent.com/64320048/89092367-d3215480-d376-11ea-829f-951e3063dc62.png)
+  ![employee_tracker](https://user-images.githubusercontent.com/64320048/89109008-0f01fb80-d403-11ea-822c-4ddbedbb6ccd.png)
 
   ## Contributors
 
