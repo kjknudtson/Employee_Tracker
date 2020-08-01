@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
     user: "root",
   
     // Your password
-    password: "",
+    password: "Vileka18Morty20!",
     database: "employee_db"
 });
 
@@ -35,7 +35,8 @@ function askUser() {
          choices: [
             "Add a department, role, or employee",
             "View existing departments, roles, or employee",
-            "Update current employee roles",
+            "Update current employee roles or managers",
+            "Delete employee",
             "Exit"
          ]
        }
@@ -50,8 +51,12 @@ function askUser() {
             viewWhat();
             break;
 
-         case "Update current employee roles":
-             updateRole();
+         case "Update current employee roles or managers":
+             updateWhat();
+             break;
+
+         case "Delete employee":
+             deleteEmployee();
              break;
 
          case "Exit":
@@ -442,6 +447,36 @@ function sortByManager() {
 
 }
 
+
+function updateWhat() {
+  inquirer
+    .prompt([
+      {
+        name: "updateWhat",
+        type: "list",
+        message: "What would you like to update?",
+        choices: [
+          "Update current employee's role",
+          "Update current employee's manager"
+        ]
+      }
+    ])
+    .then(function(answer) {
+      switch (answer.updateWhat) {
+      case "Update current employee's role":
+          updateRole();
+          break;
+      
+      case "Update current employee's manager":
+          updateManager();
+          break;
+
+      }
+    });
+}
+
+
+
 function updateRole() {
   connection.query("SELECT * FROM role", function(err, results) {
    connection.query("SELECT * FROM employee", function(err, res) {
@@ -497,17 +532,110 @@ function updateRole() {
         }
         )
       });
-
-
-
-
-
     });
-
-
-
-
   }) 
  })
 }
 
+function updateManager() {
+  connection.query("SELECT * FROM employee", function (err, res) {
+    inquirer
+      .prompt([
+        {
+          name: "employee",
+          type: "list",
+          message: "Who is changing managers?",
+          choices: function() {
+            var employeeArray = [];
+            for (var i = 0; i < res.length; i++) {
+              employeeArray.push((res[i].first_name + " " + res[i].last_name));
+            }
+            return employeeArray;
+          }
+        },
+        {
+          name: "newManager",
+          type: "list",
+          message: "Who is their new manager?",
+          choices: function() {
+            var managerArray = [];
+            for (var i = 0; i < res.length; i++) {
+              managerArray.push((res[i].first_name + " " + res[i].last_name));
+            }
+            return managerArray;
+          } 
+
+        }
+    
+      ])
+      .then(function(answer) {
+        var str = answer.employee;
+        employeeName = str.split(" ");
+        var first = employeeName[0];
+        var last = employeeName[1];
+        var manstr = answer.newManager;
+        managerName = manstr.split(" ");
+        var manFirst = managerName[0];
+        var manLast = managerName[1];
+        connection.query("SELECT id FROM employee WHERE ?", {last_name: manLast}, function(err, result){
+          var newManId = result[0].id;
+          connection.query("UPDATE employee SET ? WHERE ?",
+          [
+            {
+              manager_id: newManId
+            },
+            {
+              last_name: last
+            }
+          ],        
+          function(err, res) {
+            if (err) throw err;
+            console.log("Manager Updated!");
+            askUser();
+          }
+          )
+
+        })
+        
+      })
+  })
+
+}
+
+
+function deleteEmployee() {
+  connection.query("SELECT * FROM employee", function(err, res) {
+    inquirer
+    .prompt([
+      {
+        name: "deleteWho",
+        type: "list",
+        message: "Which employee would you like to remove?",
+        choices: function() {
+          var employeeArray = [];
+          for (var i = 0; i < res.length; i++) {
+            employeeArray.push((res[i].first_name + " " + res[i].last_name));
+          }
+          return employeeArray;
+        }
+      }
+    ])
+    .then(function(answer) {
+      var str = answer.deleteWho;
+      employeeName = str.split(" ");
+      var first = employeeName[0];
+      var last = employeeName[1];
+      connection.query("DELETE FROM employee WHERE ?",
+        {
+          last_name: last
+        },
+        function(err, res) {
+          if (err) throw err;
+          console.log("Employee removed!");
+          askUser();
+        }
+      );
+    });
+  });
+ 
+}
